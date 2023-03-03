@@ -1,3 +1,4 @@
+import { SelectableAsset } from './../../types/types';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "src/redux/app/store";
 import { UserBalance } from "src/types/types";
@@ -7,6 +8,10 @@ export interface ApprovalSlice {
     WETH: boolean;
     WBTC: boolean;
     USDC: boolean;
+    shares: boolean;
+    ERC1155: boolean;
+
+    currentTokenForApproval?: SelectableAsset | 'shares' | 'ERC1155' | undefined;
 }
 
 const initialState:ApprovalSlice={
@@ -14,6 +19,10 @@ const initialState:ApprovalSlice={
     WETH: false,
     WBTC: false,
     USDC: false,
+    shares: false,
+    ERC1155: false,
+
+    currentTokenForApproval: undefined
 }
 
 //generate a test slice that count clicks
@@ -41,6 +50,15 @@ export const approvalSlice = createSlice({
         },
         setUSDCApproval : (state, action: PayloadAction<boolean>) => {
             state.USDC = action.payload;
+        },
+        setSharesApproval : (state, action: PayloadAction<boolean>) => {
+            state.shares = action.payload;
+        },
+        setERC1155Approval : (state, action: PayloadAction<boolean>) => {
+            state.ERC1155 = action.payload;
+        },
+        setCurrentTokenForApproval : (state, action: PayloadAction<SelectableAsset | 'shares' | 'ERC1155'| undefined>) => {
+            state.currentTokenForApproval = action.payload;
         }
     },
 });
@@ -51,7 +69,10 @@ export const {
     setLoaded,
     setWETHApproval,
     setWBTCApproval,
-    setUSDCApproval
+    setUSDCApproval,
+    setSharesApproval,
+    setERC1155Approval,
+    setCurrentTokenForApproval
 } = approvalSlice.actions;
-export const selectUser = (state: RootState) => state.approval;
+export const selectApproval = (state: RootState) => state.approval;
 export default approvalSlice.reducer;

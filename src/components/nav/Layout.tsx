@@ -10,7 +10,7 @@ import { useAppDispatch } from "@/redux/app/hooks";
 
 import { useState, useEffect } from "react";
 
-import { setLoaded, setWETHApproval, setWBTCApproval, setUSDCApproval } from "@/redux/slices/approvalSlice";
+import { setLoaded, setWETHApproval, setWBTCApproval, setUSDCApproval, setSharesApproval, setERC1155Approval } from "@/redux/slices/approvalSlice";
 import { setBalance } from "@/redux/slices/userSlice";
 
 import useContractHelper from "@/hooks/useContractHelper";
@@ -36,10 +36,14 @@ const Layout = ({ children }: LayoutProps) => {
     const checkWETHApproval = contractHelper?.checkWETHApproval;
     const checkWBTCApproval = contractHelper?.checkWBTCApproval;
     const checkUSDCApproval = contractHelper?.checkUSDCApproval;
+    const checkSharesApproval = contractHelper?.checkSharesApproval;
+    const checkERC1155Approval = contractHelper?.checkERC1155Approval;
 
     const checkWETHBalance = contractHelper?.checkWETHBalance;
     const checkWBTCBalance = contractHelper?.checkWBTCBalance;
     const checkUSDCBalance = contractHelper?.checkUSDCBalance;
+    const checkSharesBalance = contractHelper?.checkSharesBalance;
+    const checkERC1155Balance = contractHelper?.checkERC1155Balance;
 
     useEffect(() => {
         if (status === "error") {
@@ -49,14 +53,18 @@ const Layout = ({ children }: LayoutProps) => {
 
     useEffect(() => {
         async function getTokenApprovals() {
-            if (checkWETHApproval && checkWBTCApproval && checkUSDCApproval) {
+            if (checkWETHApproval && checkWBTCApproval && checkUSDCApproval && checkSharesApproval && checkERC1155Approval) {
                 const wethApproval = await checkWETHApproval();
                 const wbtcApproval = await checkWBTCApproval();
                 const usdcApproval = await checkUSDCApproval();
+                const sharesApproval = await checkSharesApproval();
+                const erc1155Approval = await checkERC1155Approval();
 
                 dispatch(setWETHApproval(wethApproval));
                 dispatch(setWBTCApproval(wbtcApproval));
                 dispatch(setUSDCApproval(usdcApproval));
+                dispatch(setSharesApproval(sharesApproval));
+                dispatch(setERC1155Approval(erc1155Approval));
                 dispatch(setLoaded(true));
             }
         }
@@ -65,15 +73,20 @@ const Layout = ({ children }: LayoutProps) => {
 
     useEffect(() => {
         async function getBalances() {
-            if (checkWETHBalance && checkWBTCBalance && checkUSDCBalance) {
+            if (checkWETHBalance && checkWBTCBalance && checkUSDCBalance && checkSharesBalance && checkERC1155Balance) {
                 const WETHBalance = await checkWETHBalance();
                 const WBTCBalance = await checkWBTCBalance();
                 const USDCBalance = await checkUSDCBalance();
+                const sharesBalance = await checkSharesBalance();
+                const ERC1155Balance = await checkERC1155Balance();
+
 
                 const balance: UserBalance = {
                     WETH: WETHBalance,
                     WBTC: WBTCBalance,
                     USDC: USDCBalance,
+                    shares: sharesBalance,
+                    ERC1155: ERC1155Balance,
                 };
                 dispatch(setBalance(balance));
             }
@@ -116,7 +129,7 @@ const Layout = ({ children }: LayoutProps) => {
             >
                 {children}
             </Box>
-            {/* <ApprovalModal/> */}
+            <ApprovalModal/>
             <TransactionFailedSnackbar
                 open={open}
                 onClose={() => {

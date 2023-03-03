@@ -27,17 +27,30 @@ const initialState:ExchangeSlice={
     exchangeAsset2 : "USDC",
     exchangeStats: [
             {
-                name: "Spot Price",
-                value: "loading..."
-            },
-            {
                 name: "24 Hour Volume",
                 value: "loading...",
             },
             {
-                name: "24 Hour Change",
+                name: "24 Hour % Change",
                 value: "loading...",
             },   
+            {
+                name: "24 Hour Changes",
+                value: "loading...",
+            },
+            {
+                name: "Total Volume",
+                value: "loading...",
+            },   
+            {
+                name: "Ciculating Supply",
+                value: "loading...",
+            },    
+            {
+                name: "Market Cap",
+                value: "loading...",
+            }
+
         ],
     swapValues: {
         asset1: 0,

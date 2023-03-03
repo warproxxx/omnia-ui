@@ -30,6 +30,7 @@ import useContractHelper from "@/hooks/useContractHelper";
 import { useSigner } from "wagmi";
 import { watchBlockNumber } from "@wagmi/core";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { setStatus } from '@/redux/slices/transactionSlice'
 
 const StyledTypography = styled(Typography)<{
     active?: string;
@@ -71,6 +72,9 @@ const VaultsPage = () => {
     const getVaultDescription = contractHelper?.getVaultDescription;
     const getHedgingStrategy = contractHelper?.getHedgingStrategy;
     const getSpotStrategy = contractHelper?.getSpotStrategy;
+    const handleDeposit = contractHelper?.handleDeposit;
+    const handleWithdraw = contractHelper?.handleWithdraw;
+    const approveToken = contractHelper?.approveToken;
 
     useEffect(() => {
         async function getVaultStatsAsync() {
@@ -501,8 +505,22 @@ const VaultsPage = () => {
                                                 py: 0.3,
                                             }}
                                             disabled={address ? false : true}
-                                            onClick={() => {
-                                                console.log(`deposit ${depositValues.depositAmount} ${transactionCurrency}`);
+                                            onClick={async () => {
+                                                if(!approveToken) return;
+                                                if(!handleDeposit) return;
+                                                const token = transactionCurrency;
+                                                const tokenApprovalResult = await approveToken(token);
+                                                if(!tokenApprovalResult) return;
+
+
+                                                setTransactionLoading(true);
+                                                const organizedDepositValues = {
+                                                    ...depositValues,
+                                                    transactionCurrency
+                                                }
+                                                const result = await handleDeposit(organizedDepositValues);
+                                                if(!result) dispatch(setStatus("error"));
+                                                setTransactionLoading(false);
                                             }}
                                             loading={transactionLoading}
                                             loadingPosition="start"
@@ -635,8 +653,21 @@ const VaultsPage = () => {
                                                 py: 0.3,
                                             }}
                                             disabled={address ? false : true}
-                                            onClick={() => {
-                                                console.log(`withdraw ${withdrawValues.withdrawAmount} ${transactionCurrency}`);
+                                            onClick={async () => {
+                                                if(!handleWithdraw) return;
+                                                if(!approveToken) return;
+                                                const token = 'shares';
+                                                const tokenApprovalResult = await approveToken(token);
+                                                if(!tokenApprovalResult) return;
+
+                                                const organizedWithdrawValues = {
+                                                    ...withdrawValues,
+                                                    transactionCurrency
+                                                }
+                                                setTransactionLoading(true);
+                                                const result = await handleWithdraw(organizedWithdrawValues);
+                                                if(!result) dispatch(setStatus("error"));
+                                                setTransactionLoading(false);
                                             }}
                                             loading={transactionLoading}
                                             loadingPosition="start"

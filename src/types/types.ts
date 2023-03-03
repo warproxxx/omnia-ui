@@ -32,6 +32,8 @@ export type UserBalance = {
     WETH: number;
     WBTC: number;
     USDC: number;
+    shares: number;
+    ERC1155: number;
 }
 
 export type TransactionStatus = "success" | "pending" | "error" | null;

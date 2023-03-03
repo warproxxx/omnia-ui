@@ -29,6 +29,8 @@ import useContractHelper from "@/hooks/useContractHelper";
 import { useSigner } from "wagmi";
 import { watchBlockNumber } from "@wagmi/core";
 
+import { setStatus } from '@/redux/slices/transactionSlice'
+
 const StyledTypography = styled(Typography)<{
     active?: string;
 }>((props: { active?: string; theme: any }) => {
@@ -69,12 +71,25 @@ function ExchanePage() {
 
     const contractHelper = useContractHelper();
     const getExchangeStatsFromBlockchain = contractHelper?.getExchangeStats;
+    const handleBorrow = contractHelper?.handleBorrow;
+    const handleSwap = contractHelper?.handleSwap;
+    const approveToken =  contractHelper?.approveToken;
 
     useEffect(() => {
         async function getExchangeStatsFromBlockchainAsync() {
             if (getExchangeStatsFromBlockchain) {
-                const newExchangeStats = await getExchangeStatsFromBlockchain(exchangeAsset1, exchangeAsset2, exchangeStats);
-                if (newExchangeStats) dispatch(setExchangeStats(newExchangeStats));
+
+                let newExchangeStats = []
+                for (let i = 0; i < exchangeStats.length; i++) {
+                    newExchangeStats.push({
+                        name: exchangeStats[i].name,
+                        value: "Loading...",
+                    })
+                }
+                dispatch(setExchangeStats(newExchangeStats));
+
+                const newExchangeStats1 = await getExchangeStatsFromBlockchain(exchangeAsset1, exchangeAsset2, newExchangeStats);
+                dispatch(setExchangeStats(newExchangeStats1));
             }
         }
 
@@ -92,17 +107,11 @@ function ExchanePage() {
         // return () => {
         //     unwatchBlockNumber();
         // }
-    }, [dispatch, signer, exchangeAsset1, exchangeAsset2]);
 
-    useEffect(() => {
-        if(charData.length === 0) return;
-        let newExchangeStats = [...exchangeStats];
-        newExchangeStats[0] = {
-            ...newExchangeStats[0],
-            value: charData[charData.length - 1].exchangeRate
-        };
-        dispatch(setExchangeStats(newExchangeStats));
-    }, [charData]);
+
+
+    }, [dispatch, exchangeAsset1, exchangeAsset2]);
+
 
     const disbaledSwap = !address || exchangeAsset2 !== "USDC";
     useEffect(() => {
@@ -275,6 +284,23 @@ function ExchanePage() {
                                             disabled={address ? false : true}
                                             loading={transactionLoading}
                                             loadingPosition="start"
+                                            onClick={ async ()=>{
+                                                if(!handleSwap) return;
+                                                if(!approveToken) return;
+                                                const token = exchangeAsset1;
+                                                const tokenApprovalResult = await approveToken(token);
+                                                if(!tokenApprovalResult) return;
+                                                
+                                                const organizedSwapValues = {
+                                                    exchangeAsset1,
+                                                    exchangeAsset2,
+                                                    ...swapValues
+                                                }
+                                                setTransactionLoading(true);
+                                                const result = await handleSwap(organizedSwapValues);
+                                                if(!result) dispatch(setStatus("error"));
+                                                setTransactionLoading(false);
+                                            }}
                                         >
                                             {transactionLoading ? "Continue in wallet" : "Swap"}
                                         </LoadingButton>
@@ -456,6 +482,23 @@ function ExchanePage() {
                                             disabled={disbaledSwap}
                                             loading={transactionLoading}
                                             loadingPosition="start"
+                                            onClick={async ()=>{
+                                                if(!handleBorrow) return;
+                                                if(!approveToken) return;
+                                                const token = exchangeAsset1;
+                                                const tokenApprovalResult = await approveToken(token);
+                                                if(!tokenApprovalResult) return;
+
+                                                const organizedBorrowValues = {
+                                                    ...borrowValues,
+                                                    exchangeAsset1,
+                                                    exchangeAsset2,
+                                                }
+                                                setTransactionLoading(true);
+                                                const result = await handleBorrow(organizedBorrowValues);
+                                                if(!result) dispatch(setStatus("error"));
+                                                setTransactionLoading(false);
+                                            }}
                                         >
                                             {transactionLoading ? "Continue in wallet" : "Borrow"}
                                         </LoadingButton>

@@ -15,6 +15,8 @@ const initialState:UserSlice={
         USDC: 0,
         WETH: 0,
         WBTC: 0,
+        shares: 0,
+        ERC1155: 0
     }
 }
 

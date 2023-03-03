@@ -182,6 +182,8 @@ const useTheme = () => {
                         color: isLight ? defaultPlatte.light.foregroundColor : defaultPlatte.dark.foregroundColor,
                         backgroundColor: "transparent !important", 
                         borderBottom: "1px solid rgb(255 255 255 / 40%);",
+                        fontSize: isXs ? "1rem" : isSm ? "1rem" : isMd ? "1rem" : isLg ? "1rem" : "1rem",
+                        fontWeight: 400,
                         
                     }
                 }
