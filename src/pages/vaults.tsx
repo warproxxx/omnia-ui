@@ -24,6 +24,7 @@ import {
     setDescription,
     setHedgingStrategy,
     setSpotStrategy,
+    setUserBalance,
 } from "src/redux/slices/vaultsSlice";
 
 import useContractHelper from "@/hooks/useContractHelper";
@@ -75,6 +76,7 @@ const VaultsPage = () => {
     const handleDeposit = contractHelper?.handleDeposit;
     const handleWithdraw = contractHelper?.handleWithdraw;
     const approveToken = contractHelper?.approveToken;
+    const getUserBalance = contractHelper?.getUserBalance;
 
     useEffect(() => {
         async function getVaultStatsAsync() {
@@ -104,12 +106,20 @@ const VaultsPage = () => {
             }
         }
 
+        async function getUserBalanceAsync() {
+            if(getUserBalance){
+                const balance = await getUserBalance();
+                dispatch(setUserBalance(balance));
+            }
+        }
+
         const unwatchBlockNumber = watchBlockNumber(
             {
                 listen: true,
             },
             async () => {
                 await getVaultStatsAsync();
+                await getUserBalanceAsync();
             }
         );
 
@@ -117,9 +127,11 @@ const VaultsPage = () => {
         getVaultStatsAsync();
         getHedgingStrategyAsync();
         getSpotStrategyAsync();
+        getUserBalanceAsync();
 
         return () => {
             unwatchBlockNumber();
+            
         };
     }, [dispatch, signer]);
 
@@ -604,6 +616,15 @@ const VaultsPage = () => {
                                             </MenuItem>
                                         </Select>
                                     </Box>
+
+                                    <Box sx={{
+                                        display:'flex',
+                                        justifyContent:'space-between',
+                                    }}>
+                                        <Typography variant="body1">{`${transactionCurrency} withdrable balance`}:</Typography>
+                                        <Typography variant="body1">{withdrawValues.balance[transactionCurrency]}</Typography>
+                                    </Box>
+
                                     <TextField
                                         variant="filled"
                                         fullWidth

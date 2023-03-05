@@ -2,6 +2,8 @@ import { StatCards } from "src/types/types";
 import { SelectableAsset } from "src/types/types";
 import { useAccount, useSigner } from "wagmi";
 import { useCallback } from "react";
+import {ORACLE, VAULT_MANAGER, VAULT, VAULTMANAGER_ABI, ORACLE_ABI, VAULT_ABI, PAIRS, ERC20_ABI } from "../config"
+import { ethers } from "ethers";
 
 import { useAppDispatch, useAppSelector } from "src/redux/app/hooks";
 import {
@@ -19,106 +21,167 @@ const useContractHelper = () => {
     const dispatch = useAppDispatch();
     const { WETH, WBTC, USDC, shares, ERC1155 } = useAppSelector((state) => state.approval);
 
-    const checkWETHApproval = async () => {
-        if (!address || !signer) return false;
-    
-        //signer is a ethers.Signer
-        //address is a string
 
-        return false;
+    const checkWETHApproval = async () => {
+        try{
+            if (!address || !signer) return false;
+            let contract = new ethers.Contract( PAIRS['WETH'], ERC20_ABI, signer);
+            let x = await contract.allowance(signer.getAddress(), VAULT)
+
+            if (x < BigInt(10**18) * BigInt(10000)){
+                return false;
+            } else {
+                return true;
+            }
+        } catch(err){
+            console.log(err)
+            return false
+        }
     };
 
     const checkWBTCApproval = async () => {
-        return false;
+        try{
+            if (!address || !signer) return false;
+            let contract = new ethers.Contract( PAIRS['WBTC'], ERC20_ABI, signer);
+            let x = await contract.allowance(signer.getAddress(), VAULT)
+
+            if (x < BigInt(10**18) * BigInt(10000)){
+                return false;
+            } else {
+                return true;
+            }
+        } catch(err){
+            console.log(err)
+            return false
+        }
     };
 
     const checkUSDCApproval = async () => {
-        return false;
+        try{
+            if (!address || !signer) return false;
+            let contract = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
+            let x = await contract.allowance(signer.getAddress(), VAULT)
+
+            if (x < BigInt(10**18) * BigInt(10000)){
+                return false;
+            } else {
+                return true;
+            }
+        } catch(err){
+            console.log(err)
+            return false
+        }
     };
 
     const checkSharesApproval = async () => {
-        return false;
+        //withdraw liquidity
+        return true;
     };
 
     const checkERC1155Approval = async () => {
-        return false;
+        //repay loan
+        return true;
     };
 
     const checkWETHBalance = async () => {
-        return 1;
+        try{
+            if (!address || !signer) return false;
+
+            let contract = new ethers.Contract( PAIRS['WETH'], ERC20_ABI, signer);
+            let balance = await contract.balanceOf(signer.getAddress())
+            return ethers.utils.formatEther(balance);
+        } catch(err){
+            console.log(err)
+            return 0
+        }
+        
     };
 
     const checkWBTCBalance = async () => {
-        return 1;
+        try{
+            if (!address || !signer) return false;
+
+            let contract = new ethers.Contract( PAIRS['WBTC'], ERC20_ABI, signer);
+            let balance = await contract.balanceOf(signer.getAddress())
+            return ethers.utils.formatEther(balance);
+        } catch(err){
+            console.log(err)
+            return 0
+        }
     };
 
     const checkUSDCBalance = async () => {
-        return 1;
+        try{
+            if (!address || !signer) return false;
+
+            let contract = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
+            let balance = await contract.balanceOf(signer.getAddress())
+            return ethers.utils.formatEther(balance);
+        } catch(err){
+            console.log(err)
+            return 0
+        }
     };
 
     const checkSharesBalance = async () => {
-        return 1;
+        try{
+            if (!address || !signer) return false;
+
+            let vault_contract = new ethers.Contract( VAULT , VAULT_ABI , signer)
+            let balance = await vault_contract.balanceOf(signer.getAddress(), 0)
+            return balance
+        } catch(err){
+            console.log(err)
+            return 0
+        }
+        
     };
 
     const checkERC1155Balance = async () => {
+        //loan
         return 1;
     };
 
     const approveWETH = async () => {
         try{
-            const waitFor = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-            await waitFor(500);
-            // 50 50 change of approval
-            if (Math.random() > 0.5) {
-                dispatch(setWETHApproval(true));
-                return true;
-            } else {
-                dispatch(setWETHApproval(false));
-                return false;
-            }
+            if (!address || !signer) return false;
+            let contract = new ethers.Contract( PAIRS['WETH'], ERC20_ABI, signer);
+            await contract.approve(VAULT, ethers.constants.MaxUint256)
+            dispatch(setWETHApproval(true))
+            return true
+        } catch(err){
+            dispatch(setWBTCApproval(false));
+            console.log(err)
+            return false
         }
-        catch(err){
-            console.log(err);
-            return false;
-        }
+
     };
 
     const approveWBTC = async () => {
         try{
-            const waitFor = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-            await waitFor(500);
-            // 50 50 change of approval
-            if (Math.random() > 0.5) {
-                dispatch(setWBTCApproval(true));
-                return true;
-            } else {
-                dispatch(setWBTCApproval(false));
-                throw new Error("Approval failed");
-            }
+            if (!address || !signer) return false;
+            let contract = new ethers.Contract( PAIRS['WBTC'], ERC20_ABI, signer);
+            await contract.approve(VAULT, ethers.constants.MaxUint256)
+            dispatch(setWBTCApproval(true));
+            return true
+        } catch(err){
+            dispatch(setWBTCApproval(false));
+            console.log(err)
+            return false
         }
-        catch(err){
-            console.log(err);
-            return false;
-        }
-
     };
 
     const approveUSDC = async () => {
         try{
-            const waitFor = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-            await waitFor(500);
-            // 50 50 change of approval
-            if (Math.random() > 0.5) {
-                dispatch(setUSDCApproval(true));
-                return true;
-            } else {
-                dispatch(setUSDCApproval(false));
-                throw new Error("Approval failed");
-            }
-        }
-        catch(err){
-            console.log(err);
-            return false;
+            if (!address || !signer) return false;
+            let contract = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
+            await contract.approve(VAULT, ethers.constants.MaxUint256)
+            dispatch(setUSDCApproval(true));
+            return true
+        } catch(err){
+            dispatch(setWBTCApproval(false));
+            console.log(err)
+            return false
         }
     };
 
@@ -370,6 +433,7 @@ const useContractHelper = () => {
     };
 
     const handleDeposit = async (data: any) => {
+
         /*
             data = {
                 depositAmount: 0, 
@@ -377,16 +441,22 @@ const useContractHelper = () => {
                 transactionCurrency: 'WETH'
             }
         */
+        
+        type dataType = {
+            depositAmount: number;
+            depositInputError: string;
+            transactionCurrency: string;
+        }
+
+        let typedData : dataType = data;
+
+        if (!address || !signer) return false;
+
         try{
-            console.log(data);
-            const waitFor = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-            await waitFor(500);
-            // 50 50 change of approval
-            if (Math.random() > 0.5) {
-                return true;
-            } else {
-                throw new Error("Error");
-            }
+            let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+            let exactAmt = ethers.utils.parseUnits(String(data.depositAmount), "ether");
+            await vault.addLiquidity(exactAmt,  PAIRS[typedData.transactionCurrency as keyof typeof PAIRS]);
+            return true;
         }
         catch(err){
             console.error(err);
@@ -404,23 +474,44 @@ const useContractHelper = () => {
             }
         */
 
-        try{
-            console.log(data);
-            const waitFor = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-            await waitFor(500);
-            // 50 50 change of approval
-            if (Math.random() > 0.5) {
-                return true;
-            } else {
-                throw new Error("Error");
+            type dataType = {
+                withdrawAmount: number;
+                withdrawInputError: string;
+                transactionCurrency: string;
             }
-        }
-        catch(err){
-            console.error(err);
-            return false;
-        }
 
+    
+            let typedData : dataType = data;
+    
+            if (!address || !signer) return false;
+    
+            try{
+                let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+                let exactAmt = ethers.utils.parseUnits(String(data.withdrawAmount), "ether");
+
+                console.log(exactAmt)
+                console.log(PAIRS[typedData.transactionCurrency as keyof typeof PAIRS])
+                
+                await vault.withdrawLiquidity(exactAmt,  PAIRS[typedData.transactionCurrency as keyof typeof PAIRS]);
+                return true;    
+            }
+            catch(err){
+                console.error(err);
+                return false;
+            }
     };
+
+    const getUserBalance = async () => {
+        return {
+            WETH: 0,
+            WBTC: 0,
+            USDC: 0,
+        }
+    }
+
+    const getBorrowValuesApr = async () => {
+        return 5;
+    }
 
     return {
         checkWETHApproval,
@@ -450,6 +541,8 @@ const useContractHelper = () => {
         handleSwap,
         handleDeposit,
         handleWithdraw,
+        getUserBalance,
+        getBorrowValuesApr,
     };
 };
 

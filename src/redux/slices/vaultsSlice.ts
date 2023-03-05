@@ -17,6 +17,7 @@ export interface VaultsSlice {
         value: string;
     }>
 
+
 }
 
 const initialState:VaultsSlice={
@@ -28,6 +29,11 @@ const initialState:VaultsSlice={
     withdrawValues: {
         withdrawAmount: 0,
         withdrawInputError: null,
+        balance: {
+            'WETH': 0,
+            'USDC': 0,
+            'WBTC': 0,
+        }
     },
     vaultStats : [
         {
@@ -67,7 +73,8 @@ const initialState:VaultsSlice={
             name: 'Stat2',
             value: 'loading...'
         },
-    ]
+    ],
+
 }
 
 //generate a test slice that count clicks
@@ -110,6 +117,13 @@ export const vaultsSlice = createSlice({
             value: string;
         }>>) => {
             state.spotStrategy = action.payload;
+        },
+        setUserBalance: (state, action: PayloadAction<{
+            'WETH': number;
+            'USDC': number;
+            'WBTC': number;
+        }>) => {
+            state.withdrawValues.balance = action.payload;
         }
     }
 });
@@ -123,7 +137,8 @@ export const {
     setVaultStats,
     setDescription,
     setHedgingStrategy,
-    setSpotStrategy
+    setSpotStrategy,
+    setUserBalance,
 } = vaultsSlice.actions;
 export const selectVaults = (state: RootState) => state.vaults;
 export default vaultsSlice.reducer;

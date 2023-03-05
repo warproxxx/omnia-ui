@@ -24,6 +24,11 @@ export type DepositValues = {
 export type WithdrawValues = {
     withdrawAmount: number | string;
     withdrawInputError: string | null;
+    balance: {
+        'WETH': number;
+        'USDC': number;
+        'WBTC': number;
+    };
 }
 
 export type PortfolioLoans = Array<Array<string>>;

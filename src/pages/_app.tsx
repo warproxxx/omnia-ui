@@ -9,7 +9,7 @@ import Head from "next/head";
 import { EthereumClient, modalConnectors, walletConnectProvider } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet } from "wagmi/chains";
+import { goerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { useWeb3Modal } from "@web3modal/react";
 // import customizeWeb3Modal from "@/utils/customizeWeb3Modal";
@@ -37,7 +37,7 @@ import { querySelectorAllDeep } from "query-selector-shadow-dom";
 import customizeWeb3Modal from "src/utils/customizeWeb3Modal";
 import { Typography, Box } from "@mui/material";
 
-const chains = [mainnet];
+const chains = [goerli];
 
 const projectID = process.env.WEB3_MODAL_PROJECT_ID || ("23128664cbc1482b7901ef53172c56a6" as string);
 

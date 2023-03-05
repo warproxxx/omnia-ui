@@ -5,7 +5,7 @@ import { Box, Card, styled, Typography, Select, MenuItem, TextField, InputAdornm
 import Layout from "src/components/nav/Layout";
 import { useState, useEffect } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
-import WrappedDatePicker from "@/components/exchange/WrappedDatePicker";
+// import WrappedDatePicker from "@/components/exchange/WrappedDatePicker";
 
 import CustomChart from "@/components/exchange/CustomChart";
 
@@ -30,6 +30,7 @@ import { useSigner } from "wagmi";
 import { watchBlockNumber } from "@wagmi/core";
 
 import { setStatus } from '@/redux/slices/transactionSlice'
+import { calculateBorrowValuesForCallateral, calculateSwapValuesForAsset1, calculateSwapValuesForAsset2 } from "@/utils/calcualtion";
 
 const StyledTypography = styled(Typography)<{
     active?: string;
@@ -74,6 +75,8 @@ function ExchanePage() {
     const handleBorrow = contractHelper?.handleBorrow;
     const handleSwap = contractHelper?.handleSwap;
     const approveToken =  contractHelper?.approveToken;
+    const getBorrowValuesApr = contractHelper?.getBorrowValuesApr;
+
 
     useEffect(() => {
         async function getExchangeStatsFromBlockchainAsync() {
@@ -93,6 +96,16 @@ function ExchanePage() {
             }
         }
 
+        async function getBorrowValuesAprAsync() {
+            if(getBorrowValuesApr) {
+                const apr = await getBorrowValuesApr();
+                setBorrowValues({
+                    ...borrowValues,
+                    apr: apr,
+                });
+            }
+        }
+
         // const unwatchBlockNumber = watchBlockNumber(
         //     {
         //         listen: true,
@@ -103,12 +116,11 @@ function ExchanePage() {
         // );
 
         getExchangeStatsFromBlockchainAsync();
+        getBorrowValuesAprAsync();
 
         // return () => {
         //     unwatchBlockNumber();
         // }
-
-
 
     }, [dispatch, exchangeAsset1, exchangeAsset2]);
 
@@ -229,10 +241,18 @@ function ExchanePage() {
                                             label={exchangeAsset1}
                                             value={swapValues.asset1}
                                             onChange={(e) => {
+
+                                                const asset1 = Number(e.target.value);
+                                                const currency1 = exchangeAsset1;
+                                                const currency2 = exchangeAsset2;
+                                                const asset2 = calculateSwapValuesForAsset1(asset1, currency1, currency2);
+
                                                 setSwapValues({
                                                     ...swapValues,
                                                     asset1: e.target.value,
+                                                    asset2: asset2
                                                 });
+                                                
                                             }}
                                         />
 
@@ -244,10 +264,18 @@ function ExchanePage() {
                                             label={exchangeAsset2}
                                             value={swapValues.asset2}
                                             onChange={(e) => {
+
+                                                const asset2 = Number(e.target.value);
+                                                const currency1 = exchangeAsset1;
+                                                const currency2 = exchangeAsset2;
+                                                const asset1 = calculateSwapValuesForAsset2(asset2, currency1, currency2);
+
                                                 setSwapValues({
                                                     ...swapValues,
+                                                    asset1: asset1,
                                                     asset2: e.target.value,
                                                 });
+
                                             }}
                                         />
                                     </Box>
@@ -341,9 +369,19 @@ function ExchanePage() {
                                         }}
                                         value={borrowValues.callateral}
                                         onChange={(e) => {
+                                            const collateral = Number(e.target.value);
+                                            const currency1 = exchangeAsset1;
+                                            const currency2 = exchangeAsset2;
+                                            const duration = borrowValues.duration;
+                                            const number_duration = Number(duration.split(" ")[0]);
+                                            const borrowAmount = calculateBorrowValuesForCallateral(collateral, currency2, currency1,number_duration);
+
+
+
                                             setBorrowValues({
                                                 ...borrowValues,
                                                 callateral: e.target.value,
+                                                borrowAmount: borrowAmount
                                             });
                                         }}
                                     />
