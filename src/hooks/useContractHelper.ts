@@ -252,8 +252,32 @@ const useContractHelper = () => {
         }
     };
 
+    
+
     const getPortfolio = async () => {
         //get Active Loans
+
+        if (!address || !signer) return 0;
+
+        let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+        
+        // let err = undefined;
+        // let array = [];
+
+        // while (true)
+        // while (err === undefined) {
+        //   try {
+        //     const item = await vault._loans(array.length);
+        //     array.push(item);
+        //   } catch (e) {
+        //     err = e as Error;
+        //   }
+        // }
+
+        // let loans = await solidityPublicArrayToJsArray(vault, '_loans')
+        // console.log("Loans is")
+        // console.log(loan)
+
         const activeLoans = [
             ["USDC", "1000", "1200", "2021-10-10", "30", "10", "Payback"],
             ["WETH", "1000", "1200", "2021-10-10", "30", "10", "Payback"],
@@ -305,22 +329,41 @@ const useContractHelper = () => {
     };
 
     const getVaultStats = async () => {
+        if (!address || !signer) return 0;
+
+        let weth_contract = new ethers.Contract( PAIRS['WETH'], ERC20_ABI, signer);
+        let usdc_contract = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
+        let wbtc_contract = new ethers.Contract( PAIRS['WBTC'], ERC20_ABI, signer);
+        let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+
+        let [usd, delta] = await vault.getUSDBalanceAndDelta()
+        
+        let lp_balance = await vault.balanceOf(signer.getAddress(), 0)
+
         return [
             {
-                name: "LTV",
-                value: "0",
+                name: "USD Worth",
+                value: parseFloat(ethers.utils.formatEther(usd)).toFixed(0),
             },
             {
-                name: "Unrealized Profit",
-                value: "0",
+                name: "WETH Balance",
+                value: parseFloat(ethers.utils.formatEther(await weth_contract.balanceOf(signer.getAddress()))).toFixed(3),
             },
             {
-                name: "Realized Profit",
-                value: "0",
+                name: "USDC Balance",
+                value: parseFloat(ethers.utils.formatEther(await usdc_contract.balanceOf(signer.getAddress()))).toFixed(0),
+            },
+            {
+                name: "WBTC Balance",
+                value: parseFloat(ethers.utils.formatEther(await wbtc_contract.balanceOf(signer.getAddress()))).toFixed(4),
             },
             {
                 name: "Delta",
-                value: "0",
+                value: 1,
+            },
+            {
+                name: "LP Tokens",
+                value: parseFloat(ethers.utils.formatEther(lp_balance)).toFixed(0),
             },
         ];
     };
@@ -512,8 +555,7 @@ const useContractHelper = () => {
                 let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
                 let exactAmt = ethers.utils.parseUnits(String(data.withdrawAmount), "ether");
 
-                console.log(exactAmt)
-                console.log(PAIRS[typedData.transactionCurrency as keyof typeof PAIRS])
+
                 
                 await vault.withdrawLiquidity(exactAmt,  PAIRS[typedData.transactionCurrency as keyof typeof PAIRS]);
                 return true;    
