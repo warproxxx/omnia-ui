@@ -1,7 +1,7 @@
 ![OMNIA Card](public/OMNIA_card_official.png)
 
 # OMNIA
-in omnia paratus Latin for
+in omnia paratus Latin phrase
 
 : prepared in all things : ready for anything
 
@@ -44,8 +44,15 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Demo
 
-## License
+You can view a demo of OMNIA at [https://omnia-ethdenver.vercel.app/](https://omnia-ethdenver.vercel.app/)
+
+## Related Repositories
+[OMNIA Smart Contracts]()
+[OMNIA Backtest]()
+
+##License
 
 This project is licensed under the MIT License. 
 
