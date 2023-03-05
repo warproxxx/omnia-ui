@@ -14,10 +14,10 @@ in omnia paratus Latin phrase
 OMNIA utilizes and customize the Web3Modal theming to match the OMNIA brand. That includes both **color** and **font**. Here is a screenshot of the Web3Modal theme in action:
 
 ###### Web3modal
-![OMNIA Card](readme_images/Web3ModalThemeing1.png)
+![OMNIA Card](readme_images/Web3ModalThemeing1.PNG)
 
 ###### Web3modal button
-![OMNIA Card](readme_images/Web3ModalThemeing2.png)
+![OMNIA Card](readme_images/Web3ModalThemeing2.PNG)
 
 ##### - Web3Modal Creative Challenge
 All smart contract transactions in OMNIA are initialized via the Web3Modal SDK. This allows users to connect to their wallet of choice and sign transactions. In OMNIA, all wallet states are handled by Web3Modal.
