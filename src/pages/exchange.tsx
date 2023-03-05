@@ -136,7 +136,7 @@ function ExchanePage() {
             }
         }
         getBorrowValuesAprAsync(borrowValues,exchangeAsset1,exchangeAsset2);
-    },[borrowValues.borrowAmount,borrowValues.collateralAmount,borrowValues.duration,exchangeAsset1,exchangeAsset2])
+    },[borrowValues.borrowAmount,borrowValues.callateral,borrowValues.duration,exchangeAsset1,exchangeAsset2])
 
 
     const disbaledSwap = !address || exchangeAsset2 !== "USDC";
