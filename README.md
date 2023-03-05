@@ -1,38 +1,59 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![OMNIA Card](public/OMNIA_card_official.png)
+
+# OMNIA
+in omnia paratus Latin phrase
+
+: prepared in all things : ready for anything
+
+## ETH Denver 2023 Buildathon
+
+### 🚝Track: 
+#### Decentralized Finance
+
+### 💰 Bounties:
+##### - Web3Modal Theming Challenge
+OMNIA utilizes and customize the Web3Modal theming to match the OMNIA brand. That includes both **color** and **font**. Here is a screenshot of the Web3Modal theme in action:
+
+###### Web3modal
+![OMNIA Card](readme_images/Web3ModalThemeing1.PNG)
+
+###### Web3modal button
+![OMNIA Card](readme_images/Web3ModalThemeing2.PNG)
+
+##### - Web3Modal Creative Challenge
+All smart contract transactions in OMNIA are initialized via the Web3Modal SDK. This allows users to connect to their wallet of choice and sign transactions. In OMNIA, all wallet states are handled by Web3Modal.
+
+All contracts transactions are located in the src/hooks/useContractHelpers.ts file. Which utlizie the wagmi SDK to get the signer and initialize the contract.
+
+For example this is one of the function that checks for WETH approval 
+![OMNIA Card](readme_images/code1.png)
+
+
+##### - Web3Modal DeFi Challenge: Making Bank (Without the Banks)
+OMNIA UI provides a simple and easy user interface for users to interact with the OMNIA smart contracts. Web3Modal plays a crucial role in all of the transactions that occur in the OMNIA.
+
 
 ## Getting Started
 
-First, run the development server:
+To run OMNIA in your local enviornment, you will need to run the following commands:
 
 ```bash
+npm run install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Demo
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+You can view a demo of OMNIA at [https://omnia-ethdenver.vercel.app/](https://omnia-ethdenver.vercel.app/)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Related Repositories
+[OMNIA Smart Contracts](https://github.com/warproxxx/omnia-contracts)
+[OMNIA Backtest](https://github.com/warproxxx/omnia-backtest)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+##License
 
-## Learn More
+This project is licensed under the MIT License. 
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For more information, please see the [LICENSE](LICENSE) file.
