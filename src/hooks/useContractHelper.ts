@@ -416,11 +416,7 @@ const useContractHelper = () => {
     };
 
     const getVaultDescription = async () => {
-        return `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-        dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-        officia deserunt mollit anim id est laborum`;
+        return `This extremely efficient Vault uses the capital to create a hedged book by dealing and making multiple assets. It allows duration-based unliquidable loans at an LTV of up to 95% and swaps for and between WBTC, WETH, and USDC. The Vault can provide such loans by opening a hedge in GMX if the assets hit negative equity, ensuring a delta-neutral strategy. While doing swaps and loans, the Vault always ensures a 90% USDC split to provide stability. The swap uses a grid-based asset selloff logic and ensures that only 5% of the Vault is held in a risky non-USDC asset. Backtests show that this swap logic's yield is similar to an asset's market exposure, and the 5% can be used to make volume thousands of times bigger in a matter of days (if there is demand). Apart from market risk (and return) for 10% of the portfolio, the rest of Vault is practically delta neutral due to the hedging. `;
     };
 
     const getHedgingStrategy = async () => {
