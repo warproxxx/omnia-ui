@@ -145,7 +145,7 @@ function ExchanePage() {
 
     useEffect(()=>{
         function calculateReturnAmount(apr:number, borrowAmount:number, duration: number){
-            const returnAmount = Number(Number(borrowAmount * (1 + apr/100 * duration/365)).toFixed(2));
+            const returnAmount = Number(Number(borrowAmount * (1 + apr/100 * duration/365)).toFixed(5));
             setReturnAmount(returnAmount);
         }
         const apr = Number(borrowValues.apr);
