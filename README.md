@@ -5,7 +5,7 @@ in omnia paratus Latin phrase
 
 : prepared in all things : ready for anything
 
-## ETH Denver 2023 Buildathon
+## ETH Denver 2023 BUIDLathon
 
 ### 🚝Track: 
 #### Decentralized Finance
