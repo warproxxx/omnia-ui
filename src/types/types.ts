@@ -1,9 +1,9 @@
 import { PortfolioSlice } from './../redux/slices/portfolioSlice';
 export type SelectableAsset = "WETH" | "WBTC" | "USDC";
 
-export type StatCards = Array<{name:string, value:string}>;
+export type StatCards = Array<{name:string, value:string|number}>;
 
-export type VaultStatCards = Array<{name:string, value:string}>;
+export type VaultStatCards = Array<{name:string, value:string|number}>;
 
 export type SwapValues = { asset1: number | string; asset2: number | string; inputError: string | null };
 
