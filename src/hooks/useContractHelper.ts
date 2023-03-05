@@ -296,14 +296,13 @@ const useContractHelper = () => {
 
                     let curr = []
                     curr[0] = R_PAIRS[item.loan_asset]
-                    curr[1] = parseFloat(ethers.utils.formatEther(item.principal)).toFixed(3)
-                    curr[2] = parseFloat(ethers.utils.formatEther(item.repayment)).toFixed(3)
-                    curr[3] = start_date.toISOString().slice(0, 10);
-                    curr[4] = diffDays
-                    curr[5] = diffDays2
-                    curr[6] = "Payback"
-
-                    console.log(curr)
+                    curr[1] = i
+                    curr[2] = parseFloat(ethers.utils.formatEther(item.principal)).toFixed(3)
+                    curr[3] = parseFloat(ethers.utils.formatEther(item.repayment)).toFixed(3)
+                    curr[4] = start_date.toISOString().slice(0, 10);
+                    curr[5] = diffDays
+                    curr[6] = diffDays2
+                    curr[7] = "Payback"
 
                     activeLoans.push(curr)
                 }
@@ -451,20 +450,19 @@ const useContractHelper = () => {
     };
 
     const payLoan = async (data: any) => {
-        try {
-            console.log(data);
-            const waitFor = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-            await waitFor(500);
-            // 50 50 change of approval
-            if (Math.random() > 0.5) {
-                return true;
-            } else {
-                throw new Error("Error");
-            }
-        } catch (err) {
+        if (!address || !signer) return false;
+
+        try{
+            let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+            console.log(data)
+            await vault.repayLoan(data[1]);
+            return true;
+        }   
+        catch(err){
             console.error(err);
             return false;
         }
+
     };
 
     const handleBorrow = async (data: any) => {

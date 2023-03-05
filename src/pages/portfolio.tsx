@@ -81,7 +81,7 @@ const PortfolioPage = () => {
                 );
             }
         }
-    }, "Loan Amount", "Repayment Amount", "Burrow Date", "Duration", "Days Remaining", {
+    }, "Loan Id", "Loan Amount", "Repayment Amount", "Burrow Date", "Duration", "Days Remaining", {
         name: "Action",
         options: {
             customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
