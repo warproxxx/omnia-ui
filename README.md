@@ -57,7 +57,7 @@ You can view a demo of OMNIA at [https://omnia-ethdenver.vercel.app/](https://om
 
 The name OMNIA is a reference to the Latin phrase "in omnia paratus" which means "prepared in all things". In the case of a defi protocol, this means that the protocol is connected to all the major DeFi protocols and is ready to interact with them.
 
-The OMNIA logo is a reference to the two ravens of Odin in the nore mythology. The two ravens are called Huginn and Muninn, which means "thought" and "memory" respectively. The two ravens are sent out every morning to fly all over the world and gather information. They then return to Odin and tell him everything they have seen. This is a reference to the fact that OMNIA will be connected to all the major DeFi protocols and will be able to work with all of them.
+The OMNIA logo is a reference to the two ravens of Odin in the norse mythology. The two ravens are called Huginn and Muninn, which means "thought" and "memory" respectively. The two ravens are sent out every morning to fly all over the world and gather information. They then return to Odin and tell him everything they have seen. This is a reference to the fact that OMNIA will be connected to all the major DeFi protocols and will be able to work with all of them.
 
 ## 📜 License
 
