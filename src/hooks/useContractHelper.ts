@@ -85,7 +85,7 @@ const useContractHelper = () => {
 
     const checkWETHBalance = async () => {
         try{
-            if (!address || !signer) return false;
+            if (!address || !signer) return 0;
 
             let contract = new ethers.Contract( PAIRS['WETH'], ERC20_ABI, signer);
             let balance = await contract.balanceOf(signer.getAddress())
@@ -99,7 +99,7 @@ const useContractHelper = () => {
 
     const checkWBTCBalance = async () => {
         try{
-            if (!address || !signer) return false;
+            if (!address || !signer) return 0;
 
             let contract = new ethers.Contract( PAIRS['WBTC'], ERC20_ABI, signer);
             let balance = await contract.balanceOf(signer.getAddress())
@@ -112,7 +112,7 @@ const useContractHelper = () => {
 
     const checkUSDCBalance = async () => {
         try{
-            if (!address || !signer) return false;
+            if (!address || !signer) return 0;
 
             let contract = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
             let balance = await contract.balanceOf(signer.getAddress())
@@ -125,7 +125,7 @@ const useContractHelper = () => {
 
     const checkSharesBalance = async () => {
         try{
-            if (!address || !signer) return false;
+            if (!address || !signer) return 0;
 
             let vault_contract = new ethers.Contract( VAULT , VAULT_ABI , signer)
             let balance = await vault_contract.balanceOf(signer.getAddress(), 0)
@@ -513,6 +513,11 @@ const useContractHelper = () => {
         return 5;
     }
 
+    const getTestTokens = async () => {
+        console.log("Getting test tokens");
+    }
+
+
     return {
         checkWETHApproval,
         checkWBTCApproval,
@@ -543,6 +548,7 @@ const useContractHelper = () => {
         handleWithdraw,
         getUserBalance,
         getBorrowValuesApr,
+        getTestTokens
     };
 };
 

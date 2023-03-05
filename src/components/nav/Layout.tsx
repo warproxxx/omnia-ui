@@ -45,6 +45,8 @@ const Layout = ({ children }: LayoutProps) => {
     const checkSharesBalance = contractHelper?.checkSharesBalance;
     const checkERC1155Balance = contractHelper?.checkERC1155Balance;
 
+    const getTestTokens = contractHelper?.getTestTokens;
+
     useEffect(() => {
         if (status === "error") {
             setOpen(true);
@@ -82,9 +84,9 @@ const Layout = ({ children }: LayoutProps) => {
 
 
                 const balance: UserBalance = {
-                    WETH: WETHBalance,
-                    WBTC: WBTCBalance,
-                    USDC: USDCBalance,
+                    WETH: WETHBalance as number,
+                    WBTC: WBTCBalance as number,
+                    USDC: USDCBalance as number,
                     shares: sharesBalance,
                     ERC1155: ERC1155Balance,
                 };
@@ -117,7 +119,7 @@ const Layout = ({ children }: LayoutProps) => {
                 backgroundColor: "background.default",
             }}
         >
-            <NavBar />
+            <NavBar getTestTokens={getTestTokens}/>
             <Box
                 sx={{
                     mx: 3,

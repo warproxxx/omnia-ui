@@ -28,7 +28,7 @@ const pages = ["Portfolio", "Exchange", "Vaults"];
 const pageUrl = ["/portfolio", "/exchange", "/vaults"];
 // const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-const NavBar = () => {
+const NavBar = ({getTestTokens}:{getTestTokens: Function}) => {
     const dispatch = useAppDispatch();
     const {balance} = useAppSelector(selectUser);
     const {address} = useAccount();
@@ -265,6 +265,7 @@ const NavBar = () => {
                                     </MenuItem>
 
                                     <MenuItem onClick={()=>{
+                                        getTestTokens();
                                         handleClose();
                                     }}>
                                         <Box component="img" src="/icons/claim.svg" sx={{ height: "30px", width: "30px", mr: 0.5 }} />
