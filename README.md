@@ -1,7 +1,8 @@
 ![OMNIA Card](public/OMNIA_card_official.png)
 
-#OMNIA
-in omnia paratus Latin phrase
+# OMNIA
+in omnia paratus Latin for
+
 : prepared in all things : ready for anything
 
 ## ETH Denver 2023 Buildathon
