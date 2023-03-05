@@ -413,7 +413,7 @@ const useContractHelper = () => {
         console.log(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
         try{
             let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
-            await vault.createLoan(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
+            await vault.createLoan(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1gi as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
             return true;
         }
         catch(err){
@@ -545,7 +545,16 @@ const useContractHelper = () => {
     }
 
     const getTestTokens = async () => {
+        if (!address || !signer) return false;
         console.log("Getting test tokens");
+        let weth = new ethers.Contract( PAIRS['WETH'], ERC20_ABI, signer);
+        let usdc = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
+        let wbtc = new ethers.Contract( PAIRS['WBTC'], ERC20_ABI, signer);
+
+        await weth.mint(signer.getAddress())
+        await usdc.mint(signer.getAddress())
+        await wbtc.mint(signer.getAddress())
+
     }
 
 
