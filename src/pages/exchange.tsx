@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useAppSelector } from "@/redux/app/hooks";
 import { useAppDispatch } from "@/redux/app/hooks";
-import { Box, Card, styled, Typography, Select, MenuItem, TextField, InputAdornment, ListItemIcon, ListSubheader } from "@mui/material";
+import { Box, Card, styled, Typography, MenuItem, TextField, InputAdornment, } from "@mui/material";
 import Layout from "src/components/nav/Layout";
 import { useState, useEffect } from "react";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -23,6 +23,8 @@ import {
     setExchangeStats,
     setSwapValues as reduxSetSwapValues,
     setBorrowValues as reduxSetBorrowValues,
+    setReturnAmount as reduxSetReturnAmount,
+    setApr as reduxSetApr,
 } from "src/redux/slices/exchangeSlice";
 
 import useContractHelper from "@/hooks/useContractHelper";
@@ -61,6 +63,12 @@ function ExchanePage() {
     };
     const setBorrowValues = (values: BorrowValues) => {
         dispatch(reduxSetBorrowValues(values));
+    };
+    const setReturnAmount = (amount: number) => {
+        dispatch(reduxSetReturnAmount(amount));
+    };
+    const setApr = (apr: number) => {
+        dispatch(reduxSetApr(apr));
     };
 
     const [tradeOrBorrow, setTradeOrBorrow] = useState<"trade" | "borrow">("trade");
@@ -129,14 +137,24 @@ function ExchanePage() {
             }
             if(getBorrowValuesApr) {
                 const apr = await getBorrowValuesApr(apr_params);
-                setBorrowValues({
-                    ...borrowValues,
-                    apr: apr,
-                });
+                setApr(apr);
             }
         }
         getBorrowValuesAprAsync(borrowValues,exchangeAsset1,exchangeAsset2);
     },[borrowValues.borrowAmount,borrowValues.callateral,borrowValues.duration,exchangeAsset1,exchangeAsset2])
+
+    useEffect(()=>{
+        function calculateReturnAmount(apr:number, borrowAmount:number, duration: number){
+            const returnAmount = Number(Number(borrowAmount * (1 + apr/100 * duration/365)).toFixed(2));
+            setReturnAmount(returnAmount);
+        }
+        const apr = Number(borrowValues.apr);
+        const borrowAmount = Number(borrowValues.borrowAmount);
+        const duration = Number(borrowValues.duration.split(' ')[0]);
+        
+        calculateReturnAmount(apr,borrowAmount,duration);
+
+    },[ borrowValues.borrowAmount])
 
 
     const disbaledSwap = !address || exchangeAsset2 !== "USDC";
@@ -489,7 +507,7 @@ function ExchanePage() {
                                             Return Amount:
                                         </Typography>
                                         <Typography variant="h4" color="primary.main">
-                                            {borrowValues.returnAmount} {exchangeAsset2}
+                                            {borrowValues.returnAmount} {exchangeAsset1}
                                         </Typography>
                                     </Box>
 

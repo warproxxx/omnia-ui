@@ -99,11 +99,19 @@ export const exchangeSlice = createSlice({
         },
         setChartData : (state, action: PayloadAction<Array<any>>) => {
             state.charData = action.payload;
+        },
+        setReturnAmount: (state, action: PayloadAction<number>) => {
+            state.borrowValues.returnAmount = action.payload;
+        },
+        setApr : (state, action: PayloadAction<number>) => {
+            state.borrowValues.apr = action.payload;
         }
+
+
     }
 });
 
 //export the actions and reducer
-export const {setExchange,setexchangeAsset1,setexchangeAsset2,setExchangeStats,setSwapValues,setBorrowValues,setChartData  } = exchangeSlice.actions;
+export const {setExchange,setexchangeAsset1,setexchangeAsset2,setExchangeStats,setSwapValues,setBorrowValues,setChartData,setReturnAmount,setApr  } = exchangeSlice.actions;
 export const selectExchange = (state: RootState) => state.exchange;
 export default exchangeSlice.reducer;

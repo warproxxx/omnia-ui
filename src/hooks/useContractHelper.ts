@@ -682,7 +682,7 @@ const useContractHelper = () => {
         }
 
         apr = Math.min(apr, MAX_APR)
-
+        console.log(apr/100);
         return apr/100;
     }
 
