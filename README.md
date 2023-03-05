@@ -35,7 +35,7 @@ OMNIA UI provides a simple and easy user interface for users to interact with th
 
 ## Getting Started
 
-To test OMNIA in your local enviornment, you will need to run the following commands:
+To run OMNIA in your local enviornment, you will need to run the following commands:
 
 ```bash
 npm run install
@@ -49,8 +49,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can view a demo of OMNIA at [https://omnia-ethdenver.vercel.app/](https://omnia-ethdenver.vercel.app/)
 
 ## Related Repositories
-[OMNIA Smart Contracts]()
-[OMNIA Backtest]()
+[OMNIA Smart Contracts](https://github.com/warproxxx/omnia-contracts)
+[OMNIA Backtest](https://github.com/warproxxx/omnia-backtest)
 
 ##License
 
