@@ -259,7 +259,10 @@ const useContractHelper = () => {
     const getPortfolio = async () => {
         //get Active Loans
 
-        if (!address || !signer) return 0;
+        if (!address || !signer) return {
+            activeLoans: [],
+            inactiveLoans: [],
+        };
 
         let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
         
@@ -331,7 +334,12 @@ const useContractHelper = () => {
     };
 
     const getVaultStats = async () => {
-        if (!address || !signer) return 0;
+        if (!address || !signer) return [
+            {
+                name: '',
+                value: 0
+            }
+        ];
 
         let weth_contract = new ethers.Contract( PAIRS['WETH'], ERC20_ABI, signer);
         let usdc_contract = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
@@ -567,7 +575,11 @@ const useContractHelper = () => {
     };
 
     const getUserBalance = async () => {
-        if (!address || !signer) return false;
+        if (!address || !signer) return {
+            WETH: 0,
+            WBTC: 0,
+            USDC: 0,
+        };
         let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
         let balance = await vault.balanceOf(signer.getAddress(), 0)
         let[usd, delta] = await vault.getUSDBalanceAndDelta()

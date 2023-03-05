@@ -14,7 +14,7 @@ import useWindowDimensions from "src/hooks/useWindowDimensions";
 interface StatCardsProps {
     vaultStats: {
         name: string;
-        value: string;
+        value: string|number;
     }[];
 }
 

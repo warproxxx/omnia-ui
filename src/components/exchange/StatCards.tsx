@@ -16,7 +16,7 @@ interface StatCardsProps {
     exchangeAsset2: string;
     exchangeStats: {
         name: string;
-        value: string;
+        value: string|number;
     }[];
 }
 
