@@ -492,7 +492,7 @@ function ExchanePage() {
                                         <Typography variant="body1" sx={{ mr: 1 }}>
                                             APR
                                         </Typography>
-                                        <Typography variant="body1">{borrowValues.apr} %</Typography>
+                                        <Typography variant="body1">{Number(borrowValues.apr).toFixed(2)} %</Typography>
                                     </Box>
 
                                     <Box
