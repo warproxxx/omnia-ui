@@ -265,9 +265,53 @@ const useContractHelper = () => {
         };
 
         let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+        let id = (await vault._nextId()).toNumber()
         
-        // let err = undefined;
-        // let array = [];
+        let activeLoans = [];
+        
+        type PairType = "USDC" | "WETH" | "WBTC";
+        type ReversePairType = Record<string, PairType>;
+        const R_PAIRS: ReversePairType = {
+        "0xAed85F27Cf3877f1a286AC189a369E95c193fD4A": "USDC",
+        "0x5Dc48637677bA4bb928e1b5C2EDF48e2Baa94Fa9": "WETH",
+        "0xe0DeD57C164A218e92e53c703e5D2732F4d7A97b": "WBTC",
+        };
+
+        for (var i=1; i<=id+1; i++){
+            try{
+                let item = (await vault._loans(i)) as any;
+                if (item.repaymentDate != 0){
+
+                    let start_date = new Date(parseInt((item.timestamp).toString()) * 1000) as any
+                    let repayment_date = new Date(parseInt((item.repaymentDate).toString()) * 1000) as any
+
+                    const diffTime = Math.abs(repayment_date - start_date);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+
+                    let today = new Date() as any
+
+                    const diffTime2 = Math.abs(repayment_date - today);
+                    const diffDays2 = Math.ceil(diffTime2 / (1000 * 60 * 60 * 24)); 
+
+                    let curr = []
+                    curr[0] = R_PAIRS[item.loan_asset]
+                    curr[1] = parseFloat(ethers.utils.formatEther(item.principal)).toFixed(3)
+                    curr[2] = parseFloat(ethers.utils.formatEther(item.repayment)).toFixed(3)
+                    curr[3] = start_date.toISOString().slice(0, 10);
+                    curr[4] = diffDays
+                    curr[5] = diffDays2
+                    curr[6] = "Payback"
+
+                    console.log(curr)
+
+                    activeLoans.push(curr)
+                }
+            } catch (e){
+
+            }
+            
+        }
 
         // while (true)
         // while (err === undefined) {
@@ -282,12 +326,6 @@ const useContractHelper = () => {
         // let loans = await solidityPublicArrayToJsArray(vault, '_loans')
         // console.log("Loans is")
         // console.log(loan)
-
-        const activeLoans = [
-            ["USDC", "1000", "1200", "2021-10-10", "30", "10", "Payback"],
-            ["WETH", "1000", "1200", "2021-10-10", "30", "10", "Payback"],
-            ["WBTC", "1000", "1200", "2021-10-10", "30", "10", "Payback"],
-        ];
 
         const inactiveLoans = [
             ["USDC", "1000", "1200", "2021-10-10", "30", "2021-10-10", "Paid"],
