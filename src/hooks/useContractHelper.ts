@@ -455,7 +455,6 @@ const useContractHelper = () => {
         let now = Date.now()/1000
         let repaymentDate = parseInt(now.toString()) + parseInt(typedData.duration) * 86400
         
-        console.log(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
         try{
             let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
             await vault.createLoan(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
@@ -489,9 +488,11 @@ const useContractHelper = () => {
     
             try{
                 let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
-                let exactAmt = ethers.utils.parseUnits(String(data.asset1), "ether");
+                let exactAmt = ethers.utils.parseUnits(String(typedData.asset1), "ether");
 
-                await vault.swap(PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], typedData.asset1)
+                console.log(PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], exactAmt)
+
+                await vault.swap(PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], exactAmt)
                 return true;
             }
             catch(err){
@@ -578,18 +579,24 @@ const useContractHelper = () => {
         let usdc_contract = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
         let wbtc_contract = new ethers.Contract( PAIRS['WBTC'], ERC20_ABI, signer);
 
-        let weth_vault = await weth_contract.balanceOf(VAULT)
-        let wbtc_vault = await usdc_contract.balanceOf(VAULT)
-        let usdc_vault = await wbtc_contract.balanceOf(VAULT)
+        let oracle_contract = new ethers.Contract(ORACLE, ORACLE_ABI, signer);
 
 
-        //fix this
+        let weth_vault = ethers.utils.formatEther(await weth_contract.balanceOf(VAULT)) as any
+        let wbtc_vault = ethers.utils.formatEther(await usdc_contract.balanceOf(VAULT)) as any
+        let usdc_vault = ethers.utils.formatEther(await wbtc_contract.balanceOf(VAULT)) as any
+
+        let weth_price = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS['WETH'])) as any
+        let wbtc_price = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS['WBTC'])) as any
+        let usdc_price = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS['USDC'])) as any
+
+        
 
 
         return {
-            WETH: 0,
-            WBTC: 0,
-            USDC: 0,
+            WETH: Math.min((usd/weth_price), weth_vault),
+            WBTC: Math.min((usd/wbtc_price), wbtc_vault),
+            USDC: Math.min((usd/usdc_price), usdc_vault),
         }
     }
 
@@ -604,14 +611,29 @@ const useContractHelper = () => {
         return 5;
     }
 
-    const calculateSwapValuesForAsset1 = async (asset1: number, asset1Currency: SelectableAsset, asset2Currency: SelectableAsset ) => {
+    const calculateSwapValuesForAsset1 = async (asset1: number, asset1Currency: SelectableAsset, asset2Currency: SelectableAsset ) => {   
+        
+        
         if (!address || !signer) return 0;
-        return asset1 + 2;
+
+        let oracle_contract = new ethers.Contract(ORACLE, ORACLE_ABI, signer);
+        
+        let price1 = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS[asset1Currency])) as any
+        let price2 = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS[asset2Currency])) as any
+
+        
+        return (asset1 * price1)/price2;
     }
 
     const calculateSwapValuesForAsset2 = async (asset2: number, asset1Currency: SelectableAsset, asset2Currency: SelectableAsset ) => {
         if (!address || !signer) return 0;
-        return asset2 + 2;
+        let oracle_contract = new ethers.Contract(ORACLE, ORACLE_ABI, signer);
+        
+        let price1 = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS[asset1Currency])) as any
+        let price2 = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS[asset2Currency])) as any
+
+        
+        return (asset2 * price2)/price1;
     }
 
     const calculateBorrowValuesForCallateral = async (callateral: number, callateralCurrency: SelectableAsset, borrowCurrency: SelectableAsset, duration: number ) => {
