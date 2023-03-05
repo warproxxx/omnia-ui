@@ -489,9 +489,6 @@ const useContractHelper = () => {
             try{
                 let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
                 let exactAmt = ethers.utils.parseUnits(String(typedData.asset1), "ether");
-
-                console.log(PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], exactAmt)
-
                 await vault.swap(PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], exactAmt)
                 return true;
             }
@@ -607,8 +604,36 @@ const useContractHelper = () => {
         borrowAmount: number,
         borrowDuration: number
     }) => {
-        console.log(apr_params);
-        return 5;
+        //now this
+        if (!address || !signer) return 0;
+
+        let slope = 10 * 100
+        let intercept = 400
+
+        let oracle_contract = new ethers.Contract(ORACLE, ORACLE_ABI, signer);
+        
+        let price1 = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS[apr_params.collateralAsset as keyof typeof PAIRS])) as any
+        let price2 = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS[apr_params.borrowAsset as keyof typeof PAIRS])) as any
+
+        let collateralWorth = apr_params.collateralAmount * price1;
+        let borrowAmount = apr_params.borrowAmount * price1;
+
+        let ltv = (borrowAmount * 1000)/(collateralWorth);
+        let apr = 500
+        let MAX_APR = 2000
+
+        if (ltv > 0){
+
+            if (((slope * ltv) / 1000) > intercept){
+                apr = Math.max(apr, ((slope * ltv) / 1000) - intercept);
+            }
+
+            
+        }
+
+        apr = Math.min(apr, MAX_APR)
+
+        return apr/100;
     }
 
     const calculateSwapValuesForAsset1 = async (asset1: number, asset1Currency: SelectableAsset, asset2Currency: SelectableAsset ) => {   
@@ -638,7 +663,13 @@ const useContractHelper = () => {
 
     const calculateBorrowValuesForCallateral = async (callateral: number, callateralCurrency: SelectableAsset, borrowCurrency: SelectableAsset, duration: number ) => {
         if (!address || !signer) return 0;
-        return callateral + 2;
+
+        let oracle_contract = new ethers.Contract(ORACLE, ORACLE_ABI, signer);
+
+        let price1 = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS[callateralCurrency])) as any
+        let price2 = ethers.utils.formatEther(await oracle_contract.getPrice(PAIRS[borrowCurrency])) as any
+
+        return ((callateral * price1)/price2)/2;
     }
     
 
