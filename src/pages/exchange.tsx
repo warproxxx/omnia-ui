@@ -390,8 +390,6 @@ function ExchanePage() {
                                             const number_duration = Number(duration.split(" ")[0]);
                                             const borrowAmount = await calculateBorrowValuesForCallateral(collateral, currency2, currency1,number_duration);
 
-
-
                                             setBorrowValues({
                                                 ...borrowValues,
                                                 callateral: collateral,

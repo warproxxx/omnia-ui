@@ -48,6 +48,18 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can view a demo of OMNIA at [https://omnia-ethdenver.vercel.app/](https://omnia-ethdenver.vercel.app/)
 
+## 📷 Screenshots
+
+### Exchange Page
+![OMNIA Exchange Page](readme_images/APP_Screenshot_1.png)
+
+### Vaults Page
+![OMNIA Vaults Page](readme_images/APP_Screenshot_2.png)
+
+### Portfolio Page
+![OMNIA Vaults Page](readme_images/APP_Screenshot_3.png)
+
+
 ## 📁 Related Repositories
 [OMNIA Smart Contracts](https://github.com/warproxxx/omnia-contracts)
 <br/>
