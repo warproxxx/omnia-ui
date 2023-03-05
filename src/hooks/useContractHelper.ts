@@ -15,6 +15,8 @@ import {
     setCurrentTokenForApproval,
 } from "src/redux/slices/approvalSlice";
 
+import {useState} from 'react';
+
 const useContractHelper = () => {
     const { address } = useAccount();
     const { data: signer } = useSigner();
@@ -540,9 +542,33 @@ const useContractHelper = () => {
         }
     }
 
-    const getBorrowValuesApr = async () => {
+    const getBorrowValuesApr = async (apr_params:{
+        collateralAsset: SelectableAsset,
+        borrowAsset: SelectableAsset,
+        collateralAmount: number,
+        borrowAmount: number,
+        borrowDuration: number
+    }) => {
+        console.log(apr_params);
         return 5;
     }
+
+    const calculateSwapValuesForAsset1 = async (asset1: number, asset1Currency: SelectableAsset, asset2Currency: SelectableAsset ) => {
+        console.log("hello")
+        if (!address || !signer) return 0;
+        return asset1 + 2;
+    }
+
+    const calculateSwapValuesForAsset2 = async (asset2: number, asset1Currency: SelectableAsset, asset2Currency: SelectableAsset ) => {
+        if (!address || !signer) return 0;
+        return asset2 + 2;
+    }
+
+    const calculateBorrowValuesForCallateral = async (callateral: number, callateralCurrency: SelectableAsset, borrowCurrency: SelectableAsset, duration: number ) => {
+        if (!address || !signer) return 0;
+        return callateral + 2;
+    }
+    
 
     const getTestTokens = async () => {
         console.log("Getting test tokens");
@@ -579,7 +605,10 @@ const useContractHelper = () => {
         handleWithdraw,
         getUserBalance,
         getBorrowValuesApr,
-        getTestTokens
+        getTestTokens,
+        calculateSwapValuesForAsset1,
+        calculateSwapValuesForAsset2,
+        calculateBorrowValuesForCallateral
     };
 };
 
