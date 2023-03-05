@@ -392,17 +392,31 @@ const useContractHelper = () => {
             returnAmount : 0
         }
         */
-        try {
-            console.log(data);
-            const waitFor = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-            await waitFor(500);
-            // 50 50 change of approval
-            if (Math.random() > 0.5) {
-                return true;
-            } else {
-                throw new Error("Error");
-            }
-        } catch (err) {
+        type dataType = {
+            apr: number;
+            borrowAmount: number;
+            callateral: number;
+            duration: string;
+            exchangeAsset1: string;
+            exchangeAsset2: string;
+            inputError: string;
+            returnAmount: number;
+        }
+
+        let typedData : dataType = data;
+
+        if (!address || !signer) return false;
+
+        let now = Date.now()/1000
+        let repaymentDate = parseInt(now.toString()) + parseInt(typedData.duration) * 86400
+        
+        console.log(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
+        try{
+            let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+            await vault.createLoan(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
+            return true;
+        }
+        catch(err){
             console.error(err);
             return false;
         }
@@ -416,20 +430,29 @@ const useContractHelper = () => {
             asset2: 0, 
             inputError: null}
         */
-        try {
-            console.log(data);
-            const waitFor = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-            await waitFor(500);
-            // 50 50 change of approval
-            if (Math.random() > 0.5) {
-                return true;
-            } else {
-                throw new Error("Error");
+            type dataType = {
+                exchangeAsset1: string;
+                exchangeAsset2: string;
+                asset1: number;
+                asset2: number;
+                inputError: boolean;
             }
-        } catch (err) {
-            console.error(err);
-            return false;
-        }
+    
+            let typedData : dataType = data;
+    
+            if (!address || !signer) return false;
+    
+            try{
+                let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+                let exactAmt = ethers.utils.parseUnits(String(data.asset1), "ether");
+
+                await vault.swap(PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], typedData.asset1)
+                return true;
+            }
+            catch(err){
+                console.error(err);
+                return false;
+            }
     };
 
     const handleDeposit = async (data: any) => {
@@ -502,6 +525,14 @@ const useContractHelper = () => {
     };
 
     const getUserBalance = async () => {
+        if (!address || !signer) return false;
+        let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
+        let balance = await vault.balanceOf(signer.getAddress(), 0)
+        let[usd, delta] = await vault.getUSDBalanceAndDelta()
+
+        console.log(balance.toString())
+        console.log(usd.toString())
+
         return {
             WETH: 0,
             WBTC: 0,
