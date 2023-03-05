@@ -349,15 +349,15 @@ const useContractHelper = () => {
             },
             {
                 name: "WETH Balance",
-                value: parseFloat(ethers.utils.formatEther(await weth_contract.balanceOf(signer.getAddress()))).toFixed(3),
+                value: parseFloat(ethers.utils.formatEther(await weth_contract.balanceOf(VAULT))).toFixed(3),
             },
             {
                 name: "USDC Balance",
-                value: parseFloat(ethers.utils.formatEther(await usdc_contract.balanceOf(signer.getAddress()))).toFixed(0),
+                value: parseFloat(ethers.utils.formatEther(await usdc_contract.balanceOf(VAULT))).toFixed(0),
             },
             {
                 name: "WBTC Balance",
-                value: parseFloat(ethers.utils.formatEther(await wbtc_contract.balanceOf(signer.getAddress()))).toFixed(4),
+                value: parseFloat(ethers.utils.formatEther(await wbtc_contract.balanceOf(VAULT))).toFixed(4),
             },
             {
                 name: "Delta",
@@ -458,7 +458,7 @@ const useContractHelper = () => {
         console.log(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
         try{
             let vault = new ethers.Contract( VAULT, VAULT_ABI, signer);
-            await vault.createLoan(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1gi as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
+            await vault.createLoan(PAIRS[typedData.exchangeAsset2 as keyof typeof PAIRS], PAIRS[typedData.exchangeAsset1 as keyof typeof PAIRS], ethers.utils.parseUnits(String(typedData.callateral), "ether"), ethers.utils.parseUnits(String(typedData.borrowAmount), "ether"), repaymentDate)
             return true;
         }
         catch(err){
@@ -574,8 +574,17 @@ const useContractHelper = () => {
         let balance = await vault.balanceOf(signer.getAddress(), 0)
         let[usd, delta] = await vault.getUSDBalanceAndDelta()
 
-        console.log(balance.toString())
-        console.log(usd.toString())
+        let weth_contract = new ethers.Contract( PAIRS['WETH'], ERC20_ABI, signer);
+        let usdc_contract = new ethers.Contract( PAIRS['USDC'], ERC20_ABI, signer);
+        let wbtc_contract = new ethers.Contract( PAIRS['WBTC'], ERC20_ABI, signer);
+
+        let weth_vault = await weth_contract.balanceOf(VAULT)
+        let wbtc_vault = await usdc_contract.balanceOf(VAULT)
+        let usdc_vault = await wbtc_contract.balanceOf(VAULT)
+
+
+        //fix this
+
 
         return {
             WETH: 0,
@@ -596,7 +605,6 @@ const useContractHelper = () => {
     }
 
     const calculateSwapValuesForAsset1 = async (asset1: number, asset1Currency: SelectableAsset, asset2Currency: SelectableAsset ) => {
-        console.log("hello")
         if (!address || !signer) return 0;
         return asset1 + 2;
     }
