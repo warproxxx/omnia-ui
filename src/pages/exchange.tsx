@@ -136,7 +136,7 @@ function ExchanePage() {
             }
         }
         getBorrowValuesAprAsync(borrowValues,exchangeAsset1,exchangeAsset2);
-    },[borrowValues.borrowAmount,borrowValues.collateralAmount,borrowValues.duration,exchangeAsset1,exchangeAsset2])
+    },[borrowValues.borrowAmount,borrowValues.callateral,borrowValues.duration,exchangeAsset1,exchangeAsset2])
 
 
     const disbaledSwap = !address || exchangeAsset2 !== "USDC";
@@ -389,8 +389,6 @@ function ExchanePage() {
                                             const duration = borrowValues.duration;
                                             const number_duration = Number(duration.split(" ")[0]);
                                             const borrowAmount = await calculateBorrowValuesForCallateral(collateral, currency2, currency1,number_duration);
-
-
 
                                             setBorrowValues({
                                                 ...borrowValues,

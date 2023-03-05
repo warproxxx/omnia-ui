@@ -652,7 +652,6 @@ const useContractHelper = () => {
         await weth.mint(signer.getAddress())
         await usdc.mint(signer.getAddress())
         await wbtc.mint(signer.getAddress())
-
     }
 
 
