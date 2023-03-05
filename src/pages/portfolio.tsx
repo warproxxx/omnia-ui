@@ -225,7 +225,7 @@ const PortfolioPage = () => {
                                 flexDirection: "column",
                             }}
                         >
-                            <Typography variant="h3" color="text.secondary">
+                            {/* <Typography variant="h3" color="text.secondary">
                                 Past Loans
                             </Typography>
                             <Card>
@@ -247,7 +247,7 @@ const PortfolioPage = () => {
                                 >
                                     <MUIDataTable title={"Employee List"} data={inactive_loans} columns={inactive_loans_columns} options={options}/>
                                 </Box>
-                            </Card>
+                            </Card> */}
                         </Box>
                     </Box>
                 )}
